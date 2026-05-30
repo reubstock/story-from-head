@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Story from Head — memories you can see, hear, and breed</title>
+<meta name="description" content="Tell a two-minute story from your own life. We turn it into a storybook starring a younger you — and let two stories breed into a third." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f1ebdd;
+    --paper:#faf6ec;
+    --ink:#1c1a16;
+    --muted:#7a7164;
+    --faint:#a99f8d;
+    --line:rgba(28,26,22,.14);
+    --line-strong:rgba(28,26,22,.28);
+    --rust:#b8431e;
+    --night:#27304a;
+    --indigo:#34306b;
+    --candle:#e0a338;
+    --leaf:#5a7d52;
+    --shadow:0 1px 0 rgba(28,26,22,.05),0 18px 40px -28px rgba(28,26,22,.5);
+    --serif:'Spectral',Georgia,'Times New Roman',serif;
+    --display:'Playfair Display',Georgia,serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--serif);font-size:18px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--rust);color:#fff5ec}
+  a{color:inherit}
+  img,svg{max-width:100%;display:block}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .narrow{max-width:720px;margin-left:auto;margin-right:auto}
+
+  /* ---- meta label ---- */
+  .kicker{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .rule{height:1px;background:var(--line);border:0;margin:0}
+
+  /* ---- top bar ---- */
+  header.bar{
+    position:sticky;top:0;z-index:40;
+    background:rgba(241,235,221,.86);backdrop-filter:saturate(1.4) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar-in{display:flex;align-items:center;gap:16px;padding:13px 24px;max-width:1080px;margin:0 auto}
+  .mark{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.01em;display:flex;align-items:center;gap:9px}
+  .mark .dot{width:9px;height:9px;border-radius:50%;background:var(--rust);display:inline-block;margin-top:1px}
+  .bar-spacer{flex:1}
+  .modeswitch{display:flex;border:1px solid var(--line-strong);border-radius:999px;overflow:hidden;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .modeswitch button{appearance:none;border:0;background:transparent;color:var(--muted);padding:7px 13px;cursor:pointer;transition:.18s}
+  .modeswitch button.on{background:var(--ink);color:var(--paper)}
+  .barcta{display:none}
+  @media(min-width:760px){.barcta{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--ink);border-radius:999px;padding:8px 15px;text-decoration:none;transition:.18s}.barcta:hover{background:var(--ink);color:var(--paper)}}
+
+  /* ---- hero ---- */
+  .hero{padding:62px 0 30px;position:relative}
+  .epigraph{font-style:italic;color:var(--muted);max-width:540px;margin:0 auto 30px;text-align:center;font-size:17px}
+  .epigraph b{font-style:normal;color:var(--ink)}
+  h1.title{
+    font-family:var(--display);font-weight:800;text-align:center;
+    font-size:clamp(44px,9.2vw,104px);line-height:.95;letter-spacing:-.018em;margin:0;
+  }
+  h1.title em{font-style:italic;font-weight:500;color:var(--rust)}
+  .dek{max-width:600px;margin:26px auto 0;text-align:center;font-size:20px;color:#34302a}
+  .dek b{color:var(--rust);font-weight:600}
+
+  /* ---- the three rules ---- */
+  .rules{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper);box-shadow:var(--shadow);margin-top:44px}
+  @media(min-width:720px){.rules{grid-template-columns:1fr 1fr 1fr}}
+  .rule-card{padding:26px 24px;border-bottom:1px solid var(--line)}
+  @media(min-width:720px){.rule-card{border-bottom:0;border-right:1px solid var(--line)}.rule-card:last-child{border-right:0}}
+  .rule-card .n{font-family:var(--mono);font-size:12px;color:var(--rust);letter-spacing:.1em}
+  .rule-card h3{font-family:var(--display);font-weight:700;font-size:25px;margin:.5em 0 .25em}
+  .rule-card p{margin:0;color:var(--muted);font-size:16px}
+
+  /* ---- section scaffolding ---- */
+  section.act{padding:74px 0 8px}
+  .act-head{text-align:center;max-width:680px;margin:0 auto 40px}
+  .act-head .step{font-family:var(--mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--rust)}
+  .act-head h2{font-family:var(--display);font-weight:800;font-size:clamp(30px,5.4vw,50px);line-height:1.02;letter-spacing:-.01em;margin:.32em 0 .26em}
+  .act-head p{margin:0;color:var(--muted);font-size:18px}
+
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+
+  /* ---- capture panel ---- */
+  .capture{display:grid;grid-template-columns:1fr;gap:0}
+  @media(min-width:860px){.capture{grid-template-columns:1.05fr .95fr}}
+  .cap-left{padding:30px 28px;border-bottom:1px solid var(--line)}
+  @media(min-width:860px){.cap-left{border-bottom:0;border-right:1px solid var(--line)}}
+  .microw{display:flex;align-items:center;gap:16px}
+  .mic{width:62px;height:62px;border-radius:50%;background:var(--rust);flex:0 0 auto;display:grid;place-items:center;box-shadow:0 10px 26px -10px var(--rust);position:relative;border:0;cursor:pointer;padding:0;transition:background .2s,transform .12s}
+  .mic:active{transform:scale(.94)}
+  .mic::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--rust);opacity:0;animation:none}
+  .mic.live{background:#c0341a}
+  .mic.live::after{opacity:.4;border-color:#c0341a;animation:pulse 1.6s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(.85);opacity:.55}100%{transform:scale(1.4);opacity:0}}
+  .mic svg{width:26px;height:26px}
+  .mic .ic-stop{display:none}
+  .mic.live .ic-mic{display:none}
+  .mic.live .ic-stop{display:block}
+  .timer{font-family:var(--mono);font-size:30px;letter-spacing:.04em}
+  .timer small{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .waveform{display:flex;align-items:flex-end;gap:3px;height:38px;margin:20px 0 6px}
+  .waveform i{flex:1;background:linear-gradient(var(--rust),#e08a5f);border-radius:2px;opacity:.7;height:14%;transition:height .09s ease,opacity .2s}
+  .waveform.live i{opacity:.95}
+  .recstate{font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--muted);min-height:18px;margin-bottom:4px}
+  .recstate.warn{color:var(--rust)}
+  .recstate.good{color:var(--leaf)}
+  .field{margin-top:22px}
+  .field label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+  .whoinput{width:100%;font-family:var(--display);font-size:22px;font-weight:700;color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--rust);padding:2px 0 5px;outline:none}
+  .whoinput:focus{border-bottom-color:var(--ink)}
+  .hint{font-size:14px;color:var(--faint);margin-top:8px;font-style:italic}
+  .livewrap{margin-top:22px}
+  .livewrap label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+  .livetx{min-height:74px;max-height:140px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;font-size:16.5px;line-height:1.5}
+  .livetx .tfinal{color:var(--ink)}
+  .livetx .tinterim{color:var(--faint)}
+  .livetx .tnote{color:var(--faint);font-style:italic;font-size:14px}
+  .capactions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .capactions .pill:disabled{opacity:.4;cursor:not-allowed}
+
+  .cap-right{padding:30px 28px;background:linear-gradient(180deg,#fbf8ef,#f6f0e1)}
+  .idlabel{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .anchor{display:flex;align-items:center;gap:14px;justify-content:center}
+  .face{width:96px;height:96px;border-radius:14px;overflow:hidden;border:1px solid var(--line-strong);background:#efe7d6;box-shadow:var(--shadow)}
+  .face.big{width:112px;height:112px}
+  .arrow{font-family:var(--mono);color:var(--rust);font-size:13px;text-align:center;letter-spacing:.1em}
+  .arrow b{display:block;font-size:22px;line-height:1}
+  .facecap{text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);margin-top:8px;text-transform:uppercase}
+  .dial{margin-top:26px}
+  .dial .drow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .dial .age{font-family:var(--display);font-weight:800;font-size:30px;color:var(--rust)}
+  .dial input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:3px;background:var(--line-strong);border-radius:2px;outline:none}
+  .dial input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--rust);cursor:pointer;border:3px solid var(--paper);box-shadow:0 3px 10px -2px var(--rust)}
+  .dial input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--rust);cursor:pointer;border:3px solid var(--paper)}
+  .dial .ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:7px;letter-spacing:.1em}
+  .idnote{font-size:13.5px;color:var(--muted);margin-top:18px;border-top:1px dashed var(--line-strong);padding-top:14px;font-style:italic}
+  .idnote b{font-style:normal;color:var(--ink)}
+
+  /* ---- storybook render ---- */
+  .book{margin-top:8px}
+  .booktop{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;justify-content:space-between;margin-bottom:18px}
+  .book h3{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,40px);margin:0;letter-spacing:-.01em;line-height:1.04}
+  .byline{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em}
+  .byline b{color:var(--rust)}
+  .beats{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:680px){.beats{grid-template-columns:1fr 1fr}}
+  .beat{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .plate{aspect-ratio:40/26;width:100%;background:#ece3d1;position:relative}
+  .plate svg{position:absolute;inset:0;width:100%;height:100%}
+  .beat .cap{padding:14px 16px 16px}
+  .beat .cap .who2{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);margin-bottom:5px}
+  .beat .cap p{margin:0;font-size:16px;color:#33302a}
+  .transcript{margin-top:22px;border-left:3px solid var(--rust);padding:6px 0 6px 18px;color:var(--muted);font-style:italic;font-size:16px}
+  .transcript b{font-style:normal;color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:6px}
+  .playrow{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line-strong);border-radius:999px;padding:8px 14px;color:var(--ink);background:transparent;cursor:pointer;text-decoration:none;transition:.16s}
+  .pill:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .pill.solid{background:var(--rust);color:#fff5ec;border-color:var(--rust)}
+  .pill.solid:hover{background:#9a3514}
+
+  /* ---- placement / motif layer ---- */
+  .placement{display:grid;grid-template-columns:1fr;gap:18px;margin-top:8px}
+  @media(min-width:780px){.placement{grid-template-columns:1.3fr 1fr}}
+  .tagcloud{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  .tag{font-family:var(--mono);font-size:12px;letter-spacing:.04em;border:1px solid var(--line-strong);border-radius:7px;padding:7px 11px;color:var(--ink);background:#fbf8ef}
+  .tag b{color:var(--rust)}
+  .neighbors{list-style:none;margin:14px 0 0;padding:0}
+  .neighbors li{display:flex;gap:12px;align-items:baseline;padding:11px 0;border-top:1px solid var(--line)}
+  .neighbors li:first-child{border-top:0}
+  .neighbors .sim{font-family:var(--mono);font-size:12px;color:var(--rust);flex:0 0 46px}
+  .neighbors .nm{font-family:var(--display);font-weight:600}
+  .neighbors .au{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.05em}
+
+  /* ---- breeding ---- */
+  .breed-stage{background:linear-gradient(170deg,#262a4a,#1c2036);color:#ece8df;border-radius:18px;padding:30px 24px 34px;box-shadow:0 30px 60px -34px #161830}
+  .breed-stage .kicker{color:#b9b4d6}
+  .parents{display:grid;grid-template-columns:1fr;gap:16px;align-items:stretch}
+  @media(min-width:720px){.parents{grid-template-columns:1fr auto 1fr}}
+  .parent{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:13px;padding:18px;display:flex;flex-direction:column;gap:10px}
+  .parent .pwho{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#b9b4d6}
+  .parent .pttl{font-family:var(--display);font-weight:700;font-size:21px;color:#fbf8ef;line-height:1.1}
+  .parent .pmot{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+  .parent .pmot span{font-family:var(--mono);font-size:10.5px;border:1px solid rgba(255,255,255,.22);border-radius:6px;padding:4px 8px;color:#dcd8ef}
+  .cross{display:grid;place-items:center;font-family:var(--display);font-size:34px;color:var(--candle)}
+  @media(max-width:719px){.cross{transform:rotate(90deg)}}
+  .breedbtn{display:block;width:100%;margin:24px auto 0;max-width:340px;appearance:none;border:0;cursor:pointer;background:var(--candle);color:#2a2410;font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;padding:15px;border-radius:999px;transition:.18s;font-weight:500}
+  .breedbtn:hover{background:#f0b94a;transform:translateY(-1px)}
+  .breedbtn:disabled{opacity:.6;cursor:wait}
+
+  .offspring{margin-top:26px;overflow:hidden;max-height:0;opacity:0;transition:max-height .7s ease,opacity .7s ease}
+  .offspring.open{max-height:2600px;opacity:1}
+  .punnett{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;margin:6px 0 24px;font-family:var(--mono);font-size:12px}
+  .punnett .ph{background:rgba(255,255,255,.07);border-radius:8px;padding:10px;color:#cbc7e2;display:flex;align-items:center;justify-content:center;text-align:center;letter-spacing:.04em}
+  .punnett .corner{background:transparent}
+  .punnett .cell{background:rgba(224,163,56,.14);border:1px solid rgba(224,163,56,.4);border-radius:8px;padding:12px;color:#f6efdc;line-height:1.35}
+  .punnett .cell b{color:var(--candle)}
+  .child-card{background:rgba(250,246,236,.97);color:var(--ink);border-radius:14px;padding:22px;box-shadow:0 24px 50px -30px #000}
+  .child-card .clab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust)}
+  .child-card h4{font-family:var(--display);font-weight:800;font-size:clamp(26px,4.6vw,38px);margin:.3em 0 .1em;letter-spacing:-.01em}
+  .child-card .csub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:16px}
+  .child-card .cplate{aspect-ratio:46/22;border-radius:12px;overflow:hidden;background:#1c2036;position:relative;margin-bottom:16px}
+  .child-card .cplate svg{position:absolute;inset:0;width:100%;height:100%}
+  .child-card p.story{margin:0 0 14px;font-size:17px}
+  .child-card p.story em{color:var(--rust);font-style:normal;font-weight:600}
+  .writing{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:#cbc7e2;text-transform:uppercase;text-align:center;padding:18px 0}
+  .writing.hide{display:none}
+  .dots span{animation:blink 1.4s infinite both}.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+  /* ---- lineage ---- */
+  .lineage{margin-top:26px}
+  .tree{display:flex;flex-direction:column;align-items:center;gap:0}
+  .tier{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+  .node{background:var(--paper);border:1px solid var(--line-strong);border-radius:11px;padding:13px 16px;text-align:center;min-width:160px;box-shadow:var(--shadow)}
+  .node .nwho{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .node .nttl{font-family:var(--display);font-weight:700;font-size:16px;line-height:1.15;margin-top:3px}
+  .node.child{border-color:var(--rust);background:linear-gradient(180deg,#fff,#fdf3e6)}
+  .branch{width:2px;height:30px;background:var(--line-strong)}
+  .branchwide{height:2px;background:var(--line-strong);width:min(60%,360px)}
+
+  /* ---- legacy band ---- */
+  .legacy{background:var(--ink);color:#efe9db;border-radius:18px;padding:54px 30px;text-align:center;margin-top:20px}
+  .legacy h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,5vw,46px);margin:0 auto .4em;max-width:16ch;line-height:1.04}
+  .legacy p{max-width:560px;margin:0 auto;color:#c7bfae;font-size:18px}
+  .legacy .verbs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .legacy .verbs span{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:9px 16px;color:#efe9db}
+
+  /* ---- onboard / claim + share ---- */
+  .onboard{display:grid;grid-template-columns:1fr;gap:18px;margin-top:8px}
+  @media(min-width:780px){.onboard{grid-template-columns:1fr 1fr}}
+  .claim,.share{padding:28px 26px}
+  .claim h3,.share h3{font-family:var(--display);font-weight:700;font-size:24px;margin:0 0 6px}
+  .claim p,.share p{color:var(--muted);font-size:15.5px;margin:0 0 18px}
+  .claimrow{display:flex;gap:10px;flex-wrap:wrap}
+  .claimrow input{flex:1;min-width:160px;font-family:var(--serif);font-size:17px;padding:13px 15px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;color:var(--ink)}
+  .claimrow input:focus{outline:none;border-color:var(--rust)}
+  .claimrow button{appearance:none;border:0;cursor:pointer;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:0 20px;border-radius:10px;transition:.16s}
+  .claimrow button:hover{background:var(--rust)}
+  .claimnote{font-size:13.5px;color:var(--leaf);margin-top:12px;font-family:var(--mono);letter-spacing:.02em;min-height:18px}
+  .sharebtns{display:flex;flex-direction:column;gap:11px}
+  .sharebtns a{display:flex;align-items:center;gap:13px;text-decoration:none;border:1px solid var(--line-strong);border-radius:12px;padding:14px 16px;transition:.16s;background:#fff}
+  .sharebtns a:hover{border-color:var(--rust);transform:translateY(-1px);box-shadow:var(--shadow)}
+  .sharebtns .ico{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;color:#fff}
+  .sharebtns .ico.sms{background:var(--leaf)}
+  .sharebtns .ico.mail{background:var(--rust)}
+  .sharebtns .ico.link{background:var(--night)}
+  .sharebtns .lab{font-family:var(--display);font-weight:600;font-size:18px}
+  .sharebtns .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+
+  /* ---- footer ---- */
+  footer{padding:64px 0 80px;text-align:center}
+  footer .origin{max-width:560px;margin:0 auto 22px;color:var(--muted);font-style:italic;font-size:16px}
+  footer .origin b{font-style:normal;color:var(--ink)}
+  footer .sig{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+
+  .sectionsep{margin:0 auto;max-width:1080px;padding:0 24px}
+  .sectionsep hr{border:0;height:1px;background:var(--line);margin:0}
+
+  /* story-mode tinting */
+  body.story-mode .mic,body.story-mode .face{filter:none}
+  .modeline{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:center;margin-top:14px;letter-spacing:.04em}
+  .modeline b{color:var(--rust)}
+</style>
+</head>
+<body>
+
+<!-- ============ SVG SPRITE (reusable figures) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- young Sam: red cap, round glasses, freckle, gap-tooth -->
+    <symbol id="fig-sam" viewBox="0 0 100 150">
+      <ellipse cx="50" cy="142" rx="26" ry="5" fill="rgba(0,0,0,.12)"/>
+      <rect x="34" y="78" width="32" height="46" rx="13" fill="#3c6e8f"/>
+      <rect x="26" y="82" width="12" height="30" rx="6" fill="#e7cdaa"/>
+      <rect x="62" y="82" width="12" height="30" rx="6" fill="#e7cdaa"/>
+      <circle cx="50" cy="54" r="24" fill="#f0d4ad"/>
+      <circle cx="42" cy="60" r="2.4" fill="#c98b5a"/>
+      <!-- cap -->
+      <path d="M24 50 a26 26 0 0 1 52 0 z" fill="#b8431e"/>
+      <path d="M24 50 q26 8 52 0 l8 4 q-34 12 -68 0 z" fill="#9a3514"/>
+      <!-- round glasses -->
+      <circle cx="40" cy="52" r="8" fill="#fff" stroke="#2c2a24" stroke-width="2.4"/>
+      <circle cx="60" cy="52" r="8" fill="#fff" stroke="#2c2a24" stroke-width="2.4"/>
+      <line x1="48" y1="52" x2="52" y2="52" stroke="#2c2a24" stroke-width="2.4"/>
+      <circle cx="40" cy="52" r="2" fill="#2c2a24"/><circle cx="60" cy="52" r="2" fill="#2c2a24"/>
+      <path d="M44 66 q6 5 12 0" stroke="#9a5a36" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- adult Sam (now): same round glasses, stubble -->
+    <symbol id="fig-adult" viewBox="0 0 100 150">
+      <rect x="30" y="84" width="40" height="50" rx="10" fill="#5a6b54"/>
+      <path d="M40 86 h20 v8 q-10 6 -20 0 z" fill="#f0d4ad"/>
+      <circle cx="50" cy="56" r="27" fill="#e9cba2"/>
+      <path d="M28 58 a22 22 0 0 0 44 0 q-4 22 -22 22 q-18 0 -22 -22z" fill="#dcb98a"/>
+      <path d="M24 40 q26 -22 52 0 q2 -26 -26 -26 q-28 0 -26 26z" fill="#4a4036"/>
+      <circle cx="40" cy="54" r="9" fill="#fff" stroke="#2c2a24" stroke-width="2.6"/>
+      <circle cx="60" cy="54" r="9" fill="#fff" stroke="#2c2a24" stroke-width="2.6"/>
+      <line x1="49" y1="54" x2="51" y2="54" stroke="#2c2a24" stroke-width="2.6"/>
+      <circle cx="40" cy="54" r="2.3" fill="#2c2a24"/><circle cx="60" cy="54" r="2.3" fill="#2c2a24"/>
+      <path d="M43 70 q7 4 14 0" stroke="#a06a44" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- young Rosa: braids, holding candle -->
+    <symbol id="fig-rosa" viewBox="0 0 100 150">
+      <ellipse cx="50" cy="142" rx="24" ry="5" fill="rgba(0,0,0,.12)"/>
+      <rect x="34" y="80" width="32" height="46" rx="13" fill="#7a3b57"/>
+      <rect x="24" y="60" width="9" height="44" rx="4.5" fill="#3a2418"/>
+      <rect x="67" y="60" width="9" height="44" rx="4.5" fill="#3a2418"/>
+      <circle cx="50" cy="54" r="23" fill="#d8a878"/>
+      <path d="M27 50 a23 23 0 0 1 46 0 q-6 -16 -23 -16 q-17 0 -23 16z" fill="#3a2418"/>
+      <circle cx="42" cy="54" r="2.6" fill="#2c2a24"/><circle cx="58" cy="54" r="2.6" fill="#2c2a24"/>
+      <path d="M44 64 q6 4 12 0" stroke="#8a4a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- candle -->
+      <rect x="70" y="92" width="7" height="26" rx="2" fill="#f3ead2"/>
+      <ellipse cx="73.5" cy="88" rx="4" ry="7" fill="#e0a338"/>
+      <ellipse cx="73.5" cy="89" rx="1.8" ry="3.4" fill="#fff3c4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ TOP BAR ============ -->
+<header class="bar">
+  <div class="bar-in">
+    <div class="mark"><span class="dot"></span>Story&nbsp;from&nbsp;Head</div>
+    <div class="bar-spacer"></div>
+    <div class="modeswitch" role="tablist" aria-label="Mode">
+      <button id="m-memory" class="on" onclick="setMode('memory')">Memory</button>
+      <button id="m-story" onclick="setMode('story')">Story</button>
+    </div>
+    <a href="#claim" class="barcta">Start free</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero wrap">
+  <p class="epigraph">A boy hands back the picture book and asks for the other kind&nbsp;— <b>“not a real one, a story from your head.”</b></p>
+  <h1 class="title" id="heroTitle">Tell the story.<br>Become <em>eleven</em> again.</h1>
+  <p class="dek" id="heroDek">Speak a two-minute memory from your own life. We turn it into a <b>storybook starring the younger you</b> — to read, hear, see, and hand down. Then we let two memories <b>breed</b> into a third.</p>
+  <p class="modeline" id="modeLine"><b>Memory mode.</b> A true vignette starring a younger you. &nbsp;·&nbsp; Switch to <b>Story mode</b> for pure invention — a tale from head.</p>
+
+  <div class="rules">
+    <div class="rule-card"><div class="n">01 — the rule</div><h3>Tell it</h3><p>Talk for two minutes, out loud, the way you'd tell it to a kid at bedtime. No typing, no draft.</p></div>
+    <div class="rule-card"><div class="n">02 — the rule</div><h3>See it</h3><p>It comes back as an illustrated storybook starring a younger you — same face, smaller. Read it, play it aloud.</p></div>
+    <div class="rule-card"><div class="n">03 — the rule</div><h3>Breed it</h3><p>Pick your story and someone else's. We write the crossover — one shared world, two lives, a brand-new tale.</p></div>
+  </div>
+</div>
+
+<div class="sectionsep"><hr></div>
+
+<!-- ============ ACT I — TELL IT ============ -->
+<section class="act wrap">
+  <div class="act-head">
+    <div class="step">Act One — Tell it</div>
+    <h2>Two minutes. Out loud. To someone.</h2>
+    <p>The whole hook is the constraint: you don't write, you tell — fast, freestyle, addressed to a real person. We just listen and set the clock.</p>
+  </div>
+
+  <div class="panel capture narrow" style="max-width:880px">
+    <div class="cap-left">
+      <div class="microw">
+        <button class="mic" id="micBtn" type="button" onclick="toggleRec()" aria-label="Start recording">
+          <svg class="ic-mic" viewBox="0 0 24 24" fill="none" stroke="#fff5ec" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          <svg class="ic-stop" viewBox="0 0 24 24" fill="#fff5ec"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
+        </button>
+        <div class="timer"><span id="timer">0:00</span><small id="timerSub">tap the mic to begin</small></div>
+      </div>
+      <div class="waveform" id="waveform" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="recstate" id="recState">Ready when you are — talk for up to two minutes.</div>
+
+      <div class="field">
+        <label for="whoFor">Who is this for?</label>
+        <input id="whoFor" class="whoinput" type="text" value="Mabel, 6 — my daughter" />
+        <div class="hint">Every story is addressed to someone. It changes how you tell it — and who gets to keep it.</div>
+      </div>
+
+      <div class="livewrap">
+        <label>What you're saying</label>
+        <div class="livetx" id="transcriptLive"><span class="tnote">Your words appear here as you talk.</span></div>
+      </div>
+
+      <div class="capactions">
+        <button class="pill" id="playbackBtn" type="button" onclick="playBack()" disabled>▶ Hear it back</button>
+        <button class="pill" id="redoBtn" type="button" onclick="resetCapture()" disabled>Start over</button>
+      </div>
+    </div>
+
+    <div class="cap-right">
+      <div class="idlabel">Make the younger you obvious</div>
+      <div class="anchor">
+        <div>
+          <div class="face big"><svg viewBox="0 0 100 150" style="width:100%;height:100%"><rect width="100" height="150" fill="#e7ddc8"/><use href="#fig-adult" x="2" y="6" width="96" height="138"/></svg></div>
+          <div class="facecap">You — now</div>
+        </div>
+        <div class="arrow"><b>→</b>age it</div>
+        <div>
+          <div class="face big" id="thenFace"><svg viewBox="0 0 100 150" style="width:100%;height:100%"><rect width="100" height="150" fill="#efe6d0"/><use href="#fig-sam" x="2" y="6" width="96" height="138"/></svg></div>
+          <div class="facecap" id="thenCap">You — age 9</div>
+        </div>
+      </div>
+
+      <div class="dial">
+        <div class="drow"><label style="font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">The age dial</label><span class="age" id="ageOut">9</span></div>
+        <input type="range" min="4" max="44" value="9" id="ageRange" oninput="ageDial(this.value)" aria-label="Protagonist age">
+        <div class="ticks"><span>4</span><span>now (44)</span></div>
+      </div>
+      <p class="idnote"><b>Why a dial, not a guess.</b> No model knows your face at nine. So we don't fake a photo — we draw a storybook you, hold one feature steady (those <b>round glasses</b>, that freckle), and pin it beside you now. The likeness lives in the pairing, not the pixels.</p>
+    </div>
+  </div>
+</section>
+
+<div class="sectionsep"><hr></div>
+
+<!-- ============ ACT II — SEE IT ============ -->
+<section class="act wrap">
+  <div class="act-head">
+    <div class="step">Act Two — See it</div>
+    <h2>It comes back as a storybook.</h2>
+    <p>Same memory, now illustrated in four beats — the younger you carried frame to frame by the one feature we kept constant.</p>
+  </div>
+
+  <div class="book narrow" style="max-width:920px">
+    <div class="booktop">
+      <h3>The Summer I Dug to China</h3>
+      <div class="byline">told by <b id="bylineName">Sam Ortega</b> · for Mabel, 6 · a memory from age 9</div>
+    </div>
+
+    <div class="beats">
+      <div class="beat">
+        <div class="plate"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="260" fill="#bcd9e6"/><rect y="170" width="400" height="90" fill="#caa46a"/>
+          <circle cx="330" cy="56" r="30" fill="#f3d27a"/>
+          <ellipse cx="120" cy="60" rx="46" ry="20" fill="#fff" opacity=".8"/><ellipse cx="160" cy="52" rx="34" ry="16" fill="#fff" opacity=".8"/>
+          <path d="M150 200 q40 -26 100 0 q-50 30 -100 0z" fill="#6b4f2e"/>
+          <use href="#fig-sam" x="70" y="86" width="92" height="138"/>
+        </svg></div>
+        <div class="cap"><div class="who2">Sam, age 9</div><p>It started with a library fact: dig straight down, come out in China. I had a spoon and the whole summer.</p></div>
+      </div>
+      <div class="beat">
+        <div class="plate"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="260" fill="#a8895a"/><rect width="400" height="120" fill="#bcd9e6"/>
+          <path d="M120 120 h160 l-30 130 h-100z" fill="#5c3f22"/>
+          <ellipse cx="200" cy="120" rx="80" ry="20" fill="#4a3119"/>
+          <use href="#fig-sam" x="150" y="84" width="78" height="120"/>
+          <rect x="232" y="150" width="6" height="40" rx="2" fill="#9a9a9a" transform="rotate(24 235 170)"/>
+        </svg></div>
+        <div class="cap"><div class="who2">Sam, age 9</div><p>By August the hole was up to my chest. The spoon became a trowel. The trowel became a borrowed shovel.</p></div>
+      </div>
+      <div class="beat">
+        <div class="plate"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="260" fill="#e9b86a"/><rect width="400" height="110" fill="#f0cf86"/>
+          <path d="M90 130 h220 l-26 130 h-168z" fill="#5c3f22"/>
+          <use href="#fig-adult" x="60" y="70" width="92" height="140"/>
+          <use href="#fig-sam" x="210" y="96" width="74" height="118"/>
+        </svg></div>
+        <div class="cap"><div class="who2">Sam, 9 — and Grandpa Tino</div><p>Grandpa found me down there. He didn't laugh. He climbed in, took the shovel, and dug for an hour beside me.</p></div>
+      </div>
+      <div class="beat">
+        <div class="plate"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="260" fill="#2c3550"/>
+          <circle cx="320" cy="60" r="22" fill="#f3eccf"/>
+          <g fill="#fff7d6"><circle cx="60" cy="50" r="2"/><circle cx="120" cy="80" r="1.6"/><circle cx="200" cy="40" r="2.2"/><circle cx="260" cy="100" r="1.6"/><circle cx="100" cy="130" r="1.8"/></g>
+          <rect y="190" width="400" height="70" fill="#1d2238"/>
+          <use href="#fig-sam" x="120" y="92" width="74" height="118"/>
+          <use href="#fig-adult" x="196" y="74" width="86" height="132"/>
+        </svg></div>
+        <div class="cap"><div class="who2">Sam, age 9</div><p>“I tried this once too,” he said. “Didn't reach China. Reached your grandmother's yard.” We filled it in by moonlight.</p></div>
+      </div>
+    </div>
+
+    <div class="transcript">
+      <b id="storyTranscriptLabel">From the recording — 1:51</b>
+      <span id="storyTranscript">“…and I really thought, like, any day now the spoon's gonna break through and there'll be, you know, a whole other sky down there. Grandpa never told me it was impossible. He just got in the hole…”</span>
+    </div>
+
+    <div class="playrow">
+      <button class="pill solid" onclick="playBack()">▶ Play in your voice</button>
+      <button class="pill" onclick="alert('Reading view: large type, one beat per tap — built for a 6-year-old to scroll.')">Read-aloud view</button>
+      <a class="pill" href="#breed">See it breed ↓</a>
+    </div>
+  </div>
+</section>
+
+<div class="sectionsep"><hr></div>
+
+<!-- ============ PLACEMENT / MOTIF LAYER ============ -->
+<section class="act wrap">
+  <div class="act-head">
+    <div class="step">Under the hood — how stories find each other</div>
+    <h2>Every story gets its DNA read.</h2>
+    <p>Folklorists spent a century cataloguing the world's tales. We borrow their index — tale-types, motifs, the shape of the telling — so any two stories can be compared, and bred. This is the part that makes the crossover possible instead of hand-wavy.</p>
+  </div>
+
+  <div class="placement narrow" style="max-width:920px">
+    <div class="panel" style="padding:24px 24px 26px">
+      <div class="kicker">Motif read · this story</div>
+      <div class="tagcloud">
+        <span class="tag"><b>ATU 1889</b> tall-tale journey</span>
+        <span class="tag"><b>F721</b> the underground world</span>
+        <span class="tag"><b>J1703</b> the child's literal logic</span>
+        <span class="tag"><b>P231</b> the elder who joins, not corrects</span>
+        <span class="tag"><b>N825</b> help from an old man</span>
+      </div>
+      <div style="margin-top:20px" class="kicker">Propp shape · the telling</div>
+      <div class="tagcloud">
+        <span class="tag">lack →</span><span class="tag">departure →</span><span class="tag">the task →</span><span class="tag">unexpected helper →</span><span class="tag">recognition →</span><span class="tag">return at dusk</span>
+      </div>
+    </div>
+    <div class="panel" style="padding:24px 24px 26px">
+      <div class="kicker">Memories like this</div>
+      <ul class="neighbors">
+        <li><span class="sim">0.81</span><span><span class="nm">The Raft We Never Finished</span><br><span class="au">by Dale W. · for his grandson</span></span></li>
+        <li><span class="sim">0.74</span><span><span class="nm">Grandma Said the Well Went to the Sea</span><br><span class="au">by Priya N. · for Aanya, 5</span></span></li>
+        <li><span class="sim">0.69</span><span><span class="nm">The Night the Lights Went Out in the Village</span><br><span class="au">by Rosa Delgado · a stranger you'd breed well with</span></span></li>
+      </ul>
+      <p class="hint" style="margin-top:14px">High overlap = <b>kinship</b> (browse "stories like this"). The sweet spot for <b>breeding</b> is a little lower — similar enough to share a world, different enough to surprise.</p>
+    </div>
+  </div>
+</section>
+
+<div class="sectionsep"><hr></div>
+
+<!-- ============ ACT III — BREED IT ============ -->
+<section class="act wrap" id="breed">
+  <div class="act-head">
+    <div class="step">Act Three — Breed it · the home run</div>
+    <h2>Two friends. One new world.</h2>
+    <p>Sam's tunnel meets Rosa's blackout — two strangers the engine matched on shared story-DNA, bred into a tale neither of them lived. This is the crossover: two childhoods, one shared world. The engine writes it; the lineage is kept forever.</p>
+  </div>
+
+  <div class="breed-stage narrow" style="max-width:920px">
+    <div class="kicker" style="text-align:center;margin-bottom:18px">Choose two · we write the third</div>
+    <div class="parents">
+      <div class="parent">
+        <div class="pwho">Parent A · Sam, age 9</div>
+        <div class="pttl">The Summer I Dug to China</div>
+        <div class="pmot"><span>the believed tunnel</span><span>the literal-minded boy</span><span>the elder who joins in</span></div>
+      </div>
+      <div class="cross">✕</div>
+      <div class="parent">
+        <div class="pwho">Parent B · Rosa D. · matched by the engine</div>
+        <div class="pttl">The Night the Lights Went Out in the Village</div>
+        <div class="pmot"><span>the blackout</span><span>one shared candle</span><span>the whole street outside</span></div>
+      </div>
+    </div>
+
+    <button class="breedbtn" id="breedBtn" onclick="breed()">⚭ &nbsp;Breed these two</button>
+    <div class="writing hide" id="writing">The engine is writing the crossover<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+
+    <div class="offspring" id="offspring">
+      <div class="kicker" style="margin:6px 0 10px">How the DNA crossed</div>
+      <div class="punnett">
+        <div class="corner"></div>
+        <div class="ph">Rosa: the blackout</div>
+        <div class="ph">Rosa: one candle</div>
+        <div class="ph">Sam: the tunnel</div>
+        <div class="cell">A boy digs <b>up</b> through the floor of a village with no power</div>
+        <div class="cell">…and the only light to dig toward is <b>one candle</b> in a window</div>
+        <div class="ph">Sam: the boy who believes</div>
+        <div class="cell">He's certain the dark street is <b>another country</b> he tunneled to</div>
+        <div class="cell">A girl with a candle decides <b>not to correct him</b> — and shows him around</div>
+      </div>
+
+      <div class="child-card">
+        <div class="clab">The offspring · written by the engine</div>
+        <h4>The Boy Who Tunneled Into the Blackout</h4>
+        <div class="csub">a Story from Head crossover · Sam Ortega × Rosa Delgado · two friends, one world</div>
+        <div class="cplate"><svg viewBox="0 0 460 220" preserveAspectRatio="xMidYMid slice">
+          <rect width="460" height="220" fill="#171b2e"/>
+          <rect y="150" width="460" height="70" fill="#0f1322"/>
+          <g fill="#3a3f5c"><rect x="40" y="70" width="70" height="80"/><rect x="130" y="50" width="60" height="100"/><rect x="350" y="60" width="70" height="90"/></g>
+          <rect x="150" y="88" width="16" height="20" fill="#e0a338" opacity=".9"/>
+          <ellipse cx="260" cy="150" rx="46" ry="12" fill="#0a0d18"/>
+          <use href="#fig-sam" x="208" y="74" width="70" height="110"/>
+          <use href="#fig-rosa" x="276" y="64" width="74" height="118"/>
+          <g fill="#fff7d6"><circle cx="60" cy="36" r="1.6"/><circle cx="220" cy="30" r="1.8"/><circle cx="400" cy="40" r="1.6"/></g>
+        </svg></div>
+        <p class="story">When Sam's tunnel finally broke through, it didn't come up in China. It came up through the cold floorboards of a house where every light had died at once. A girl was waiting there with <em>a single candle</em>, unsurprised, as if she'd been told a boy would arrive from below.</p>
+        <p class="story">“Is this China?” he asked. Rosa looked at the dark street full of neighbors holding matches — and decided the kindest answer was a tour. <em>She never said no.</em> She just lifted the candle and showed him a country that was really only her village, the night the power failed.</p>
+        <div class="playrow">
+          <button class="pill solid" onclick="alert('▶ Plays the crossover narrated — and in the live app you can have it read in Sam’s or Rosa’s voice.')">▶ Play the crossover</button>
+          <button class="pill" onclick="alert('Remix: spin a third parent in, or hand the sequel to another family member to continue.')">Add a third parent</button>
+          <a class="pill" href="#claim">Make your own ↓</a>
+        </div>
+      </div>
+
+      <!-- lineage -->
+      <div class="lineage">
+        <div class="kicker" style="text-align:center;margin-bottom:16px">The lineage, kept forever</div>
+        <div class="tree">
+          <div class="tier">
+            <div class="node"><div class="nwho">Sam · his memory</div><div class="nttl">The Summer I Dug to China</div></div>
+            <div class="node"><div class="nwho">Rosa · her memory</div><div class="nttl">The Night the Lights Went Out</div></div>
+          </div>
+          <div class="branch"></div>
+          <div class="branchwide"></div>
+          <div class="branch"></div>
+          <div class="tier">
+            <div class="node child"><div class="nwho">Bred today · a crossover</div><div class="nttl">The Boy Who Tunneled Into the Blackout</div></div>
+          </div>
+          <div class="branch"></div>
+          <div class="tier">
+            <div class="node" style="opacity:.55;border-style:dashed"><div class="nwho">Up next</div><div class="nttl">+ breed it with another friend's story…</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sectionsep"><hr></div>
+
+<!-- ============ LEGACY BAND ============ -->
+<section class="act wrap">
+  <div class="legacy">
+    <h2>The stories you make from your head outlive your head.</h2>
+    <p>Every vignette is a small piece of you the people you love — friends and family alike — can read, hear in your voice, see you young again, and breed with their own. A shared mythology, built one story at a time.</p>
+    <div class="verbs"><span>Read</span><span>Listen</span><span>See you young</span><span>Remix</span><span>Hand down</span></div>
+  </div>
+</section>
+
+<!-- ============ ONBOARD / CLAIM + SHARE ============ -->
+<section class="act wrap" id="claim">
+  <div class="act-head">
+    <div class="step">Start in ten seconds</div>
+    <h2>No password. Just a name.</h2>
+    <p>Claim your shelf with a first name now; we'll text you a link to lock it later. The bar to begin is one breath.</p>
+  </div>
+
+  <div class="onboard narrow" style="max-width:920px">
+    <div class="panel claim">
+      <h3>Claim your shelf</h3>
+      <p>Type a name and you're in. Your first story saves to this name; secure it with a single text whenever you like.</p>
+      <div class="claimrow">
+        <input id="nameIn" type="text" placeholder="Your first name…" autocomplete="given-name" />
+        <button onclick="claimName()">Start</button>
+      </div>
+      <div class="claimnote" id="claimNote"></div>
+    </div>
+
+    <div class="panel share">
+      <h3>Hand it to someone</h3>
+      <p>A story isn't finished until someone you love has it. Sharing is a tap — text or email, no app required.</p>
+      <div class="sharebtns">
+        <a id="smsShare" href="sms:&body=I made you a Story from Head — a memory of me at nine, as a storybook. Open it: https://story-from-head.vercel.app">
+          <span class="ico sms" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.6 8.6 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/></svg></span>
+          <span><span class="lab">Share by text</span><br><span class="sub">Opens Messages with the link ready</span></span>
+        </a>
+        <a id="mailShare" href="mailto:?subject=A Story from Head, for you&body=I made you a Story from Head — a two-minute memory of me at nine, turned into a storybook you can read, hear, and remix.%0D%0A%0D%0AOpen it: https://story-from-head.vercel.app">
+          <span class="ico mail" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+          <span><span class="lab">Share by email</span><br><span class="sub">Opens your mail with it written for you</span></span>
+        </a>
+        <a id="linkShare" href="#" onclick="copyLink(event)">
+          <span class="ico link" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></span>
+          <span><span class="lab" id="copyLab">Copy the link</span><br><span class="sub">Paste it anywhere — group chat, fridge, frame</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="wrap">
+  <p class="origin">The name comes from <b>Charlie Melcher's son</b>, who'd hand back the picture book at bedtime and ask instead for <b>“a story from your head”</b> — a made-up one. This is that request, kept.</p>
+  <div class="sig">Story from Head · a memory engine · sibling to <a href="https://dreams-livid.vercel.app" style="color:var(--rust);text-decoration:none">Dreams</a></div>
+</footer>
+
+<script>
+  // ---------- mode toggle ----------
+  function setMode(m){
+    document.getElementById('m-memory').classList.toggle('on', m==='memory');
+    document.getElementById('m-story').classList.toggle('on', m==='story');
+    document.body.classList.toggle('story-mode', m==='story');
+    var t=document.getElementById('heroTitle'),d=document.getElementById('heroDek'),l=document.getElementById('modeLine');
+    if(m==='story'){
+      t.innerHTML='Tell the story.<br>Make it <em>real</em> enough to keep.';
+      d.innerHTML='Freestyle a two-minute tale from nowhere — the kind a kid asks for at bedtime. We turn it into an <b>illustrated storybook</b>, then let two stories <b>breed</b> into a third.';
+      l.innerHTML='<b>Story mode.</b> Pure invention — a tale from head. &nbsp;·&nbsp; Switch to <b>Memory mode</b> to star a younger you.';
+    } else {
+      t.innerHTML='Tell the story.<br>Become <em>eleven</em> again.';
+      d.innerHTML='Speak a two-minute memory from your own life. We turn it into a <b>storybook starring the younger you</b> — to read, hear, see, and hand down. Then we let two memories <b>breed</b> into a third.';
+      l.innerHTML='<b>Memory mode.</b> A true vignette starring a younger you. &nbsp;·&nbsp; Switch to <b>Story mode</b> for pure invention — a tale from head.';
+    }
+  }
+
+  // ---------- age dial ----------
+  function ageDial(v){
+    v=+v;
+    document.getElementById('ageOut').textContent=v;
+    var cap=document.getElementById('thenCap'), face=document.getElementById('thenFace');
+    if(v>=34){
+      cap.textContent='You — now ('+v+')';
+      face.innerHTML='<svg viewBox="0 0 100 150" style="width:100%;height:100%"><rect width="100" height="150" fill="#efe6d0"/><use href="#fig-adult" x="2" y="6" width="96" height="138"/></svg>';
+    } else {
+      cap.textContent='You — age '+v;
+      // same kid figure; the held-constant glasses do the identity work at any young age
+      face.innerHTML='<svg viewBox="0 0 100 150" style="width:100%;height:100%"><rect width="100" height="150" fill="#efe6d0"/><use href="#fig-sam" x="2" y="6" width="96" height="138"/></svg>';
+    }
+  }
+
+  // ---------- breed reveal ----------
+  function breed(){
+    var btn=document.getElementById('breedBtn'), w=document.getElementById('writing'), off=document.getElementById('offspring');
+    btn.disabled=true; btn.textContent='⚭  Breeding…'; w.classList.remove('hide');
+    var steps=0, iv=setInterval(function(){
+      steps++;
+      if(steps>=4){
+        clearInterval(iv); w.classList.add('hide');
+        off.classList.add('open');
+        btn.textContent='⚭  Bred — meet generation II ↓';
+        setTimeout(function(){off.scrollIntoView({behavior:'smooth',block:'start'});},250);
+      }
+    }, 520);
+  }
+
+  // ---------- claim name ----------
+  function claimName(){
+    var v=document.getElementById('nameIn').value.trim();
+    var note=document.getElementById('claimNote');
+    if(!v){note.style.color='var(--rust)';note.textContent='Just a first name — that’s all it takes.';return;}
+    note.style.color='var(--leaf)';
+    note.textContent='✓ Shelf claimed for '+v+'. Your first story will save here. Text a link to lock it anytime.';
+    var by=document.getElementById('bylineName'); if(by) by.textContent=v;
+  }
+
+  // ---------- copy link ----------
+  function copyLink(e){
+    e.preventDefault();
+    var url='https://story-from-head.vercel.app';
+    var lab=document.getElementById('copyLab');
+    function done(){lab.textContent='Copied ✓';setTimeout(function(){lab.textContent='Copy the link';},1800);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done,done);}
+    else{done();}
+  }
+
+  // ================= WORKING VOICE CAPTURE =================
+  var MAXSEC=120;
+  var recording=false, seconds=0, timerInt=null, rafId=null;
+  var audioCtx=null, analyser=null, mediaRec=null, recog=null;
+  var currentStream=null, recordedChunks=[], recBlobUrl=null, finalTranscript='';
+
+  function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  function setRecState(msg,kind){
+    var el=document.getElementById('recState');
+    el.className='recstate'+(kind?(' '+kind):'');
+    el.textContent=msg;
+  }
+
+  async function toggleRec(){
+    if(recording){stopRec();return;}
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      setRecState('This browser can’t reach the microphone. Try Chrome.','warn');return;
+    }
+    setRecState('Asking for the microphone…');
+    try{
+      var stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      startRec(stream);
+    }catch(err){
+      setRecState('Microphone blocked. Allow mic access, then tap again.','warn');
+    }
+  }
+
+  function startRec(stream){
+    recording=true; currentStream=stream; finalTranscript=''; recordedChunks=[]; recBlobUrl=null;
+    document.getElementById('micBtn').classList.add('live');
+    document.getElementById('micBtn').setAttribute('aria-label','Stop recording');
+    document.getElementById('waveform').classList.add('live');
+    document.getElementById('timerSub').textContent='recording — tap to stop · max 2:00';
+    document.getElementById('redoBtn').disabled=false;
+    setRecState('Listening — tell it the way you’d tell a kid.');
+    document.getElementById('transcriptLive').innerHTML='<span class="tinterim">…</span>';
+
+    // capture audio for playback
+    try{
+      mediaRec=new MediaRecorder(stream);
+      mediaRec.ondataavailable=function(e){if(e.data&&e.data.size)recordedChunks.push(e.data);};
+      mediaRec.onstop=function(){
+        try{
+          var blob=new Blob(recordedChunks,{type:(mediaRec&&mediaRec.mimeType)||'audio/webm'});
+          recBlobUrl=URL.createObjectURL(blob);
+          document.getElementById('playbackBtn').disabled=false;
+        }catch(e){}
+      };
+      mediaRec.start();
+    }catch(e){}
+
+    // live waveform
+    try{
+      audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended')audioCtx.resume();
+      var src=audioCtx.createMediaStreamSource(stream);
+      analyser=audioCtx.createAnalyser(); analyser.fftSize=64; analyser.smoothingTimeConstant=.7;
+      src.connect(analyser);
+      drawWave();
+    }catch(e){}
+
+    // timer
+    seconds=0; document.getElementById('timer').textContent='0:00';
+    timerInt=setInterval(function(){
+      seconds++; document.getElementById('timer').textContent=fmt(seconds);
+      if(seconds>=MAXSEC){setRecState('Two minutes — that’s the whole story.','good'); stopRec();}
+    },1000);
+
+    startRecognition();
+  }
+
+  function drawWave(){
+    var bars=Array.prototype.slice.call(document.querySelectorAll('#waveform i'));
+    var data=new Uint8Array(analyser.frequencyBinCount);
+    var step=Math.max(1,Math.floor(data.length/bars.length));
+    (function loop(){
+      analyser.getByteFrequencyData(data);
+      for(var i=0;i<bars.length;i++){
+        var v=data[i*step]||0;
+        bars[i].style.height=Math.max(8,Math.round((v/255)*100))+'%';
+      }
+      rafId=requestAnimationFrame(loop);
+    })();
+  }
+
+  function startRecognition(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    var live=document.getElementById('transcriptLive');
+    if(!SR){live.innerHTML='<span class="tnote">Live captions need Chrome — but your audio is recording fine, and you can hear it back.</span>';return;}
+    recog=new SR(); recog.continuous=true; recog.interimResults=true; recog.lang='en-US';
+    recog.onresult=function(e){
+      var interim='';
+      for(var i=e.resultIndex;i<e.results.length;i++){
+        var t=e.results[i][0].transcript;
+        if(e.results[i].isFinal)finalTranscript+=t+' '; else interim+=t;
+      }
+      live.innerHTML='<span class="tfinal">'+escapeHtml(finalTranscript)+'</span><span class="tinterim">'+escapeHtml(interim)+'</span>';
+      live.scrollTop=live.scrollHeight;
+    };
+    recog.onerror=function(){};
+    recog.onend=function(){ if(recording){ try{recog.start();}catch(e){} } };
+    try{recog.start();}catch(e){}
+  }
+
+  function stopRec(){
+    if(!recording)return;
+    recording=false;
+    document.getElementById('micBtn').classList.remove('live');
+    document.getElementById('micBtn').setAttribute('aria-label','Start recording');
+    document.getElementById('waveform').classList.remove('live');
+    if(timerInt){clearInterval(timerInt);timerInt=null;}
+    if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+    if(recog){recog.onend=null; try{recog.stop();}catch(e){}}
+    if(mediaRec&&mediaRec.state!=='inactive'){try{mediaRec.stop();}catch(e){}}
+    if(currentStream){currentStream.getTracks().forEach(function(t){t.stop();});}
+    if(audioCtx){try{audioCtx.close();}catch(e){}}
+    // settle waveform to idle
+    Array.prototype.slice.call(document.querySelectorAll('#waveform i')).forEach(function(b){b.style.height='';});
+    document.getElementById('timerSub').textContent='captured · '+fmt(seconds);
+    document.getElementById('redoBtn').disabled=false;
+
+    var said=finalTranscript.trim();
+    if(said){
+      setRecState('Got it. That’s your story — watch it become a book below.','good');
+      // flow the real words into the storybook transcript
+      var dest=document.getElementById('storyTranscript');
+      var lab=document.getElementById('storyTranscriptLabel');
+      if(dest){dest.textContent='“'+said+'”';}
+      if(lab){lab.textContent='From your recording — '+fmt(seconds);}
+    }else{
+      setRecState('Recording saved. (No words caught — try Chrome for live captions.)');
+    }
+  }
+
+  function resetCapture(){
+    if(recording)stopRec();
+    finalTranscript=''; seconds=0; recBlobUrl=null;
+    document.getElementById('timer').textContent='0:00';
+    document.getElementById('timerSub').textContent='tap the mic to begin';
+    document.getElementById('transcriptLive').innerHTML='<span class="tnote">Your words appear here as you talk.</span>';
+    document.getElementById('playbackBtn').disabled=true;
+    document.getElementById('redoBtn').disabled=true;
+    setRecState('Ready when you are — talk for up to two minutes.');
+  }
+
+  function playBack(){
+    if(recBlobUrl){var a=new Audio(recBlobUrl);a.play();}
+    else{alert('Record a story first — tap the mic at the top of “Tell it,” then come back and hear it in your own voice.');}
+  }
+
+  function escapeHtml(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+</script>
+</body>
+</html>
