@@ -1,0 +1,8 @@
+{
+  "name": "story-from-head",
+  "private": true,
+  "description": "Story from Head — record a 2-minute story, transcribe with Whisper, write it up with GPT-4o-mini, illustrate the scene with gpt-image-1, persist to Redis + Blob, share at /s/:id.",
+  "dependencies": {
+    "@vercel/blob": "^0.27.0"
+  }
+}

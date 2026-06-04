@@ -2,3 +2,4 @@
 .claude/
 .vercel/
 node_modules/
+.vercel
