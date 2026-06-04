@@ -25,7 +25,7 @@ const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN;
 //   curl -s https://api.replicate.com/v1/models/cdingram/face-swap -H "Authorization: Bearer $TOKEN" | jq -r .latest_version.id
 const FACE_SWAP_VERSION = 'd1d6ea8c8be89d664a07a457526f7128109dee7030fdac424788d762c71ed111';
 
-const STORY_STYLE = `Style: cinematic film still from a quiet, character-driven independent drama. Naturalistic and real — soft realistic light with one warm key source against a slightly desaturated cool color grade, subtle film grain, shallow depth of field, anamorphic feel. A true moment, emotionally honest, never posed. NOT an illustration, NOT a cartoon, NOT a painting, NOT a 3D render, NOT a greeting card, NOT glossy stock. NO text, letters, or words anywhere in the image.`;
+const STORY_STYLE = `Style: narrative oil painting — painterly, with visible brushwork and a warm, earthy palette lit by lamplight, candlelight, or soft natural light. A coherent, grounded figurative scene, observed and real but unmistakably PAINTED, in the spirit of Edward Hopper and John Singer Sargent. NOT photographic. NOT a photo. NOT generic AI art. NOT storybook or children's-book illustration. NOT digital illustration. NOT anime. NOT cartoon. NO text, letters, or words anywhere in the image.`;
 
 function newId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
