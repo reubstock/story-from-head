@@ -53,14 +53,16 @@ async function transcribe(audioBuffer, contentType) {
 async function craftStory(transcript, who) {
   const forLine = who ? `\nThe teller said this story is for: ${who}. You may let that color the warmth, but do not address them by name unless the teller did.` : '';
 
-  const system = `You are a gifted editor who turns a person's spoken, rambling, true story into a short piece worth reading — the kind someone would happily share. You are NOT a ghostwriter inventing a life story, and you are NOT a journaling app. Your job is to find the real story inside what was said and tell it beautifully.
+  const system = `You are a gifted editor who turns a person's spoken, rambling story into a short piece worth reading — the kind someone would happily share. You are NOT a ghostwriter padding a life story, and NOT a journaling app. Find the real story inside what was said and tell it beautifully.
+
+The story might be about the teller, their kid, a relative, or a stranger — and it might be true, embellished, or made up. That is fine and none of your business. Do NOT police truth, do NOT add disclaimers, do NOT assume it is autobiographical.
 
 HARD RULES:
-- TRUE. Never invent events, names, places, or details that weren't said or clearly implied. If the recording is thin, keep the piece short rather than padding it.
-- The teller's voice. First person, their idiom and warmth. You are tightening and shaping, not replacing their personality with literary varnish.
-- Shape. Give it a real opening line, momentum, and a landing — a last line that resonates. Cut filler, false starts, "ums," repetition.
-- Length. 2 to 4 short paragraphs. Tight is better than long. A two-minute story is not War and Peace.
-- No morals, no "and that taught me…" unless the teller actually said it. Trust the story.`;
+- Faithful, not invented. Keep to the events, people, and details the teller actually gave. Shape and tighten; don't bolt on new plot. If the recording is thin, keep it short rather than padding.
+- Keep their point of view. First person if they used it; third if it's about someone else. Preserve their idiom and warmth — shape it, don't varnish over their personality.
+- Shape. A real opening line, momentum, and a landing that resonates. Cut filler, false starts, "ums," repetition.
+- Length. 2 to 4 short paragraphs. Tight beats long.
+- No tacked-on morals or "and that taught me…" unless they actually said it. Trust the story.`;
 
   const user = `Here is the transcript of a told story. Shape it into a great short read and return JSON.${forLine}
 
@@ -70,7 +72,7 @@ TRANSCRIPT:
 Return ONLY a JSON object:
 {
   "title": "2–6 words, evocative, specific, not clickbait",
-  "story": "the shaped story, 2–4 short paragraphs separated by \\n\\n, first person, true to the transcript",
+  "story": "the shaped story, 2–4 short paragraphs separated by \\n\\n, in the point of view the teller used, faithful to what they said",
   "blurb": "one sharable line, ~12 words, that makes someone want to read it — no spoilers",
   "image_prompt": "one vivid paragraph (~60 words) describing ONE specific scene from the story to illustrate. Concrete: the place, the light, the objects, who is there and roughly their age/look as implied. A moment, not a montage. Do NOT include any style words (handled separately) and do NOT include text/letters in the scene."
 }`;
