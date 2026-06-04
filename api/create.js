@@ -107,7 +107,7 @@ Return ONLY a JSON object:
 
 // ---- Analysis: the story's DNA. Sharp, specific, never greeting-card. ----
 async function analyze(story) {
-  const system = `You are a perceptive reader — part folklorist, part essayist — who finds the deeper shape of a very short story in a sentence or two. You are precise, a little surprising, and grown-up. You NEVER write greeting-card sentiment, therapy-speak, or "this teaches us that…". You are not flattering the teller; you are seeing the story clearly. When a story rhymes with a known folktale type, motif, or archetype, name it plainly.`;
+  const system = `You are a perceptive reader — part folklorist, part essayist — who finds the deeper shape of a very short story in a sentence or two. You are precise, concrete, and grown-up. You NEVER write greeting-card sentiment, therapy-speak, "this teaches us that…", or abstract-noun mush ("presence", "connection", "the human spirit", "the power of memory"). You point at specifics in the actual story, not at the universe. You are not flattering the teller; you are seeing the story clearly. When a story rhymes with a known folktale type, motif, or archetype, name it plainly.`;
 
   const user = `Read this short story and return ONLY a JSON object analyzing it:
 {
@@ -115,7 +115,7 @@ async function analyze(story) {
   "motifs": ["3 to 5 short motif/theme phrases — concrete, not abstract — e.g. 'grief disguised as routine', 'the persistence of love', 'found family'"],
   "turn": "one sentence naming the hinge — the moment the story pivots",
   "echo": "1–2 sentences: what this rhymes with in folklore or the wider canon. Name a real tale-type, motif, or archetype if one fits; otherwise name the universal pattern. No name-dropping for its own sake.",
-  "insight": "one perceptive, specific sentence about what the telling reveals — observational, not presumptuous, not flattering"
+  "insight": "ONE concrete sentence pointing at a specific choice in THIS story — what the teller noticed, lingered on, or left out, and what that does. Point at the story, not the universe. Forbidden: 'this teaches/reveals/illustrates that', any life-lesson, and abstract-noun mush."
 }
 
 STORY:
