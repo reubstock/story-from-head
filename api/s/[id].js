@@ -31,7 +31,7 @@ function escAttr(s) { return esc(s).replace(/\n/g, ' '); }
 
 function notFound(res) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  return res.status(404).send(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story not found</title><style>body{font-family:Georgia,serif;background:#121417;color:#e9e7e2;display:grid;place-items:center;height:100vh;margin:0;text-align:center;padding:24px}a{color:#e07a4e}</style></head><body><div><h1>This story has wandered off.</h1><p>We couldn't find it. <a href="/">Tell one of your own →</a></p></div></body></html>`);
+  return res.status(404).send(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story not found</title><style>body{font-family:Georgia,serif;background:#f1ebdd;color:#1c1a16;display:grid;place-items:center;height:100vh;margin:0;text-align:center;padding:24px}a{color:#b8431e}</style></head><body><div><h1>This story has wandered off.</h1><p>We couldn't find it. <a href="/">Tell one of your own →</a></p></div></body></html>`);
 }
 
 export default async function handler(req, res) {
@@ -91,7 +91,7 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,500&family=Spectral:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
-  :root{--bg:#121417;--paper:#1a1d21;--ink:#e9e7e2;--muted:#9aa1a8;--faint:#6b7177;--line:rgba(255,255,255,.10);--line-strong:rgba(255,255,255,.20);--rust:#e07a4e;--leaf:#7fa87a;--shadow:0 1px 0 rgba(0,0,0,.3),0 26px 50px -30px rgba(0,0,0,.8);--serif:'Spectral',Georgia,serif;--display:'Playfair Display',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+  :root{--bg:#f1ebdd;--paper:#faf6ec;--ink:#1c1a16;--muted:#7a7164;--faint:#a99f8d;--line:rgba(28,26,22,.14);--line-strong:rgba(28,26,22,.28);--rust:#b8431e;--leaf:#5a7d52;--shadow:0 1px 0 rgba(28,26,22,.05),0 18px 40px -28px rgba(28,26,22,.5);--serif:'Spectral',Georgia,serif;--display:'Playfair Display',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:19px;line-height:1.66;-webkit-font-smoothing:antialiased}
   ::selection{background:var(--rust);color:#fff5ec}
@@ -105,7 +105,7 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
   .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);text-align:center}
   h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,6vw,52px);line-height:1.04;letter-spacing:-.015em;text-align:center;margin:.4em 0 .3em}
   .who{text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin-bottom:26px}
-  img.hero{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow);margin:6px 0 30px;background:#1f2329}
+  img.hero{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow);margin:6px 0 30px;background:#e7ddc8}
   .body p{margin:0 0 1.15em}
   .analysis{margin:36px 0 8px;padding:24px;background:var(--paper);border:1px solid var(--line);border-radius:14px}
   .analysis .ahead{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);margin-bottom:16px}
@@ -130,8 +130,8 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
   .next{text-align:center;margin:46px 0 12px}
   .next .nextk{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);margin-bottom:14px}
   .next .nextq{font-family:var(--display);font-style:italic;font-size:clamp(23px,4.4vw,32px);line-height:1.25;color:var(--ink);max-width:18ch;margin:0 auto 22px}
-  .next a{display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--rust);color:#1a1208;text-decoration:none;padding:15px 28px;border-radius:999px;transition:.16s}
-  .next a:hover{background:#efa074}
+  .next a{display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--rust);color:#fff5ec;text-decoration:none;padding:15px 28px;border-radius:999px;transition:.16s}
+  .next a:hover{background:#9a3514}
   .next .sub{font-style:italic;color:var(--muted);font-size:15px;margin-top:14px}
   footer{padding:30px 0 50px;text-align:center}
   footer .sig{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}

@@ -57,28 +57,25 @@ async function transcribe(audioBuffer, contentType) {
 async function craftStory(transcript, who) {
   const forLine = who ? `\nThe teller said this story is for: ${who}. You may let that color the warmth, but do not address them by name unless the teller did.` : '';
 
-  const system = `You are a gifted editor who turns a person's spoken, rambling story into a short piece worth reading — the kind someone would happily share. You are NOT a ghostwriter padding a life story, and NOT a journaling app. Find the real story inside what was said and tell it beautifully.
+  const system = `You are a careful transcript editor. Someone spoke a story aloud; your job is to present it in THEIR OWN WORDS, cleaned up only as much as a respectful transcriber would. You are NOT a writer. You have no literary voice. You never improve, dress up, or embellish. Preserving the teller's exact voice is the entire job — anything you add is a violation.
 
-The story might be about the teller, their kid, a relative, or a stranger — and it might be true, embellished, or made up. That is fine and none of your business. Do NOT police truth, do NOT add disclaimers, do NOT assume it is autobiographical.
+YOU MAY: remove filler ("um", "uh", "like", "you know", "I mean"), remove false starts and stutters, remove pure repetition, fix obvious transcription errors, add paragraph breaks, fix punctuation and capitalization.
 
-HARD RULES:
-- Faithful, not invented. Keep to the events, people, and details the teller actually gave. Shape and tighten; don't bolt on new plot. If the recording is thin, keep it short rather than padding.
-- Keep their point of view. First person if they used it; third if it's about someone else. Preserve their idiom and warmth — shape it, don't varnish over their personality.
-- Shape. A real opening line, momentum, and a landing that resonates. Cut filler, false starts, "ums," repetition.
-- Length. 2 to 4 short paragraphs. Tight beats long.
-- No tacked-on morals or "and that taught me…" unless they actually said it. Trust the story.`;
+YOU MAY NOT: add any detail, image, adjective, or phrase they didn't say; rephrase for style; upgrade their word choices; change their sentence structure; invent an opening line or a closing "landing"; make anything more vivid, poetic, dramatic, or "literary." If a sentence is plain, it stays plain. If they rambled, keep the ramble (minus the filler). When in any doubt, keep their original words verbatim.
 
-  const user = `Here is the transcript of a told story. Shape it into a great short read and return JSON.${forLine}
+The result must read like a faithful, lightly-cleaned transcript of exactly what they said — their voice, their words, nothing added, nothing dressed up.`;
+
+  const user = `Here is the raw transcript of a told story. Clean it up faithfully (filler and false starts only) and return JSON.${forLine}
 
 TRANSCRIPT:
 """${transcript}"""
 
 Return ONLY a JSON object:
 {
-  "title": "2–6 words, evocative, specific, not clickbait",
-  "story": "the shaped story, 2–4 short paragraphs separated by \\n\\n, in the point of view the teller used, faithful to what they said",
-  "blurb": "one sharable line, ~12 words, that makes someone want to read it — no spoilers",
-  "image_prompt": "one vivid paragraph (~60 words) describing ONE specific scene from the story to illustrate. Concrete: the place, the light, the objects, who is there and roughly their age/look as implied. A moment, not a montage. Do NOT include any style words (handled separately) and do NOT include text/letters in the scene."
+  "title": "2–6 words, plain and specific, drawn from the teller's own words. A label, not a flourish.",
+  "story": "the teller's story IN THEIR OWN WORDS — only filler/false-starts/repetition removed and paragraph breaks added. NOT rewritten, NOT embellished, NOT restyled. It must read as what they actually said.",
+  "blurb": "one plain line (~12 words) describing what the story is about, using the teller's own framing — no hype, no spoilers",
+  "image_prompt": "one paragraph (~60 words) describing ONE concrete scene FROM the story to illustrate — only places, people, objects the teller actually mentioned. The place, the light, who is there and their rough age/look as stated. A moment, not a montage. Invent no new elements. No style words, no text/letters in the scene."
 }`;
 
   let data;
@@ -89,7 +86,7 @@ Return ONLY a JSON object:
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
-        temperature: 0.7,
+        temperature: 0.2,
         response_format: { type: 'json_object' },
       }),
     });
