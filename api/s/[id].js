@@ -31,7 +31,7 @@ function escAttr(s) { return esc(s).replace(/\n/g, ' '); }
 
 function notFound(res) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  return res.status(404).send(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story not found</title><style>body{font-family:Georgia,serif;background:#f1ebdd;color:#1c1a16;display:grid;place-items:center;height:100vh;margin:0;text-align:center;padding:24px}a{color:#b8431e}</style></head><body><div><h1>This story has wandered off.</h1><p>We couldn't find it. <a href="/">Tell one of your own →</a></p></div></body></html>`);
+  return res.status(404).send(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story not found</title><style>body{font-family:Georgia,serif;background:#121417;color:#e9e7e2;display:grid;place-items:center;height:100vh;margin:0;text-align:center;padding:24px}a{color:#e07a4e}</style></head><body><div><h1>This story has wandered off.</h1><p>We couldn't find it. <a href="/">Tell one of your own →</a></p></div></body></html>`);
 }
 
 export default async function handler(req, res) {
@@ -53,6 +53,18 @@ export default async function handler(req, res) {
   const img = s.image_url ? `<img class="hero" src="${escAttr(s.image_url)}" alt="${title}" />` : '';
   const audio = s.audio_url
     ? `<div class="voice"><div class="vlab">Hear it in their voice</div><audio controls preload="none" src="${escAttr(s.audio_url)}"></audio></div>`
+    : '';
+
+  const a = s.analysis;
+  const analysisHtml = a && (a.kind || a.turn || (a.motifs && a.motifs.length))
+    ? `<div class="analysis">
+        <div class="ahead">What you told <span>· telling earns you insight</span></div>
+        ${a.kind ? `<div class="arow"><div class="alab">Kind</div><div class="aval">${esc(a.kind)}</div></div>` : ''}
+        ${a.motifs && a.motifs.length ? `<div class="arow"><div class="alab">Motifs</div><div class="aval"><div class="tags">${a.motifs.map((m) => `<span>${esc(m)}</span>`).join('')}</div></div></div>` : ''}
+        ${a.turn ? `<div class="arow"><div class="alab">The turn</div><div class="aval">${esc(a.turn)}</div></div>` : ''}
+        ${a.echo ? `<div class="arow"><div class="alab">Echoes</div><div class="aval">${esc(a.echo)}</div></div>` : ''}
+        ${a.insight ? `<div class="ainsight">${esc(a.insight)}</div>` : ''}
+      </div>`
     : '';
 
   const shareText = encodeURIComponent(`“${s.title}” — a Story from Head. ${s.blurb || ''}`.trim());
@@ -78,7 +90,7 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,500&family=Spectral:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
-  :root{--bg:#f1ebdd;--paper:#faf6ec;--ink:#1c1a16;--muted:#7a7164;--faint:#a99f8d;--line:rgba(28,26,22,.14);--line-strong:rgba(28,26,22,.28);--rust:#b8431e;--leaf:#5a7d52;--shadow:0 1px 0 rgba(28,26,22,.05),0 18px 40px -28px rgba(28,26,22,.5);--serif:'Spectral',Georgia,serif;--display:'Playfair Display',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+  :root{--bg:#121417;--paper:#1a1d21;--ink:#e9e7e2;--muted:#9aa1a8;--faint:#6b7177;--line:rgba(255,255,255,.10);--line-strong:rgba(255,255,255,.20);--rust:#e07a4e;--leaf:#7fa87a;--shadow:0 1px 0 rgba(0,0,0,.3),0 26px 50px -30px rgba(0,0,0,.8);--serif:'Spectral',Georgia,serif;--display:'Playfair Display',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:19px;line-height:1.66;-webkit-font-smoothing:antialiased}
   ::selection{background:var(--rust);color:#fff5ec}
@@ -92,9 +104,19 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
   .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);text-align:center}
   h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,6vw,52px);line-height:1.04;letter-spacing:-.015em;text-align:center;margin:.4em 0 .3em}
   .who{text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin-bottom:26px}
-  img.hero{width:100%;border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow);margin:6px 0 30px;background:#e7ddc8}
+  img.hero{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow);margin:6px 0 30px;background:#1f2329}
   .body p{margin:0 0 1.15em}
-  .body p:first-letter{}
+  .analysis{margin:36px 0 8px;padding:24px;background:var(--paper);border:1px solid var(--line);border-radius:14px}
+  .analysis .ahead{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);margin-bottom:16px}
+  .analysis .ahead span{color:var(--faint)}
+  .arow{display:grid;grid-template-columns:1fr;gap:3px;padding:12px 0;border-top:1px solid var(--line)}
+  @media(min-width:560px){.arow{grid-template-columns:118px 1fr;gap:16px}}
+  .arow:first-of-type{border-top:0}
+  .alab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+  .aval{font-size:16.5px;color:var(--ink);line-height:1.5}
+  .tags{display:flex;flex-wrap:wrap;gap:7px}
+  .tags span{font-family:var(--mono);font-size:12px;border:1px solid var(--line-strong);border-radius:6px;padding:5px 9px;color:var(--ink)}
+  .ainsight{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line-strong);font-family:var(--display);font-style:italic;font-size:19px;line-height:1.45;color:var(--ink)}
   .voice{margin:30px 0 8px;padding:18px;background:var(--paper);border:1px solid var(--line);border-radius:13px;text-align:center}
   .voice .vlab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
   .voice audio{width:100%;max-width:420px}
@@ -122,6 +144,7 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
     ${img}
     <div class="body">${storyHtml}</div>
     ${audio}
+    ${analysisHtml}
     <hr class="rule" />
     <div class="share">
       <div class="lab">Send it to someone</div>

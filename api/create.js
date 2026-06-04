@@ -21,7 +21,7 @@ export const config = { api: { bodyParser: false }, maxDuration: 120 };
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
 
-const STORY_STYLE = `Style: warm hand-painted storybook illustration, in the spirit of classic children's-book art — soft natural light, painterly brushwork, gentle saturated palette, tender and a little nostalgic. A single coherent scene with real specific detail. NOT photographic. NOT a 3D render. NOT anime. NOT corporate vector art. NO text, letters, or words anywhere in the image.`;
+const STORY_STYLE = `Style: cinematic film still from a quiet, character-driven independent drama. Naturalistic and real — soft realistic light with one warm key source against a slightly desaturated cool color grade, subtle film grain, shallow depth of field, anamorphic feel. A true moment, emotionally honest, never posed. NOT an illustration, NOT a cartoon, NOT a painting, NOT a 3D render, NOT a greeting card, NOT glossy stock. NO text, letters, or words anywhere in the image.`;
 
 function newId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -102,6 +102,49 @@ Return ONLY a JSON object:
     story: (parsed.story || transcript).toString().slice(0, 6000),
     blurb: (parsed.blurb || '').toString().slice(0, 200),
     image_prompt: (parsed.image_prompt || transcript.slice(0, 300)).toString().slice(0, 1200),
+  };
+}
+
+// ---- Analysis: the story's DNA. Sharp, specific, never greeting-card. ----
+async function analyze(story) {
+  const system = `You are a perceptive reader — part folklorist, part essayist — who finds the deeper shape of a very short story in a sentence or two. You are precise, a little surprising, and grown-up. You NEVER write greeting-card sentiment, therapy-speak, or "this teaches us that…". You are not flattering the teller; you are seeing the story clearly. When a story rhymes with a known folktale type, motif, or archetype, name it plainly.`;
+
+  const user = `Read this short story and return ONLY a JSON object analyzing it:
+{
+  "kind": "3–6 words naming the archetype, plain and specific — e.g. 'A kindness-to-a-stranger story', 'A coming-of-age dare', 'A trickster's comeuppance'",
+  "motifs": ["3 to 5 short motif/theme phrases — concrete, not abstract — e.g. 'grief disguised as routine', 'the persistence of love', 'found family'"],
+  "turn": "one sentence naming the hinge — the moment the story pivots",
+  "echo": "1–2 sentences: what this rhymes with in folklore or the wider canon. Name a real tale-type, motif, or archetype if one fits; otherwise name the universal pattern. No name-dropping for its own sake.",
+  "insight": "one perceptive, specific sentence about what the telling reveals — observational, not presumptuous, not flattering"
+}
+
+STORY:
+"""${story}"""`;
+
+  let data;
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${OPENAI_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
+        temperature: 0.6,
+        response_format: { type: 'json_object' },
+      }),
+    });
+    if (res.ok) { data = await res.json(); break; }
+    if (res.status >= 500 && attempt < 2) { await new Promise((r) => setTimeout(r, 700 * (attempt + 1))); continue; }
+    throw new Error(`analyze ${res.status}`);
+  }
+  let p = {};
+  try { p = JSON.parse(data.choices?.[0]?.message?.content || '{}'); } catch (_) {}
+  return {
+    kind: (p.kind || '').toString().slice(0, 80),
+    motifs: Array.isArray(p.motifs) ? p.motifs.slice(0, 5).map((m) => m.toString().slice(0, 60)) : [],
+    turn: (p.turn || '').toString().slice(0, 300),
+    echo: (p.echo || '').toString().slice(0, 500),
+    insight: (p.insight || '').toString().slice(0, 300),
   };
 }
 
@@ -200,13 +243,19 @@ export default async function handler(req, res) {
     // write it up
     const crafted = await craftStory(transcript, who);
 
-    // illustrate (best-effort — a story without a picture still ships)
+    // illustrate + analyze in parallel (both best-effort — a story still ships without either)
+    const [imgBuf, analysis] = await Promise.all([
+      generateImage(crafted.image_prompt).catch((e) => { console.warn('image failed:', e.message); return null; }),
+      analyze(crafted.story).catch((e) => { console.warn('analyze failed:', e.message); return null; }),
+    ]);
+
     let image_url = null;
-    try {
-      const img = await generateImage(crafted.image_prompt);
-      const blob = await put(`story-img/${newId()}.png`, img, { access: 'public', contentType: 'image/png', token: BLOB_TOKEN });
-      image_url = blob.url;
-    } catch (e) { console.warn('image failed:', e.message); }
+    if (imgBuf) {
+      try {
+        const blob = await put(`story-img/${newId()}.png`, imgBuf, { access: 'public', contentType: 'image/png', token: BLOB_TOKEN });
+        image_url = blob.url;
+      } catch (e) { console.warn('image blob failed:', e.message); }
+    }
 
     const id = newId();
     const record = {
@@ -218,6 +267,7 @@ export default async function handler(req, res) {
       who,
       audio_url,
       image_url,
+      analysis,
       created: new Date().toISOString(),
     };
     // Persist the story as a public JSON blob at a deterministic path so the

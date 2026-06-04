@@ -12,10 +12,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --bg:#f1ebdd; --paper:#faf6ec; --ink:#1c1a16; --muted:#7a7164; --faint:#a99f8d;
-    --line:rgba(28,26,22,.14); --line-strong:rgba(28,26,22,.28);
-    --rust:#b8431e; --leaf:#5a7d52;
-    --shadow:0 1px 0 rgba(28,26,22,.05),0 18px 40px -28px rgba(28,26,22,.5);
+    --bg:#121417; --paper:#1a1d21; --ink:#e9e7e2; --muted:#9aa1a8; --faint:#6b7177;
+    --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.20);
+    --rust:#e07a4e; --leaf:#7fa87a;
+    --shadow:0 1px 0 rgba(0,0,0,.3),0 26px 50px -30px rgba(0,0,0,.8);
     --serif:'Spectral',Georgia,serif; --display:'Playfair Display',Georgia,serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
   }
   *{box-sizing:border-box}
@@ -39,7 +39,7 @@
   .epigraph b{font-style:normal;color:var(--ink)}
   h1{font-family:var(--display);font-weight:800;font-size:clamp(38px,8vw,66px);line-height:.98;letter-spacing:-.02em;margin:0 0 18px}
   h1 em{font-style:italic;font-weight:500;color:var(--rust)}
-  .sub{max-width:520px;margin:0 auto 6px;font-size:19px;color:#34302a}
+  .sub{max-width:520px;margin:0 auto 6px;font-size:19px;color:#c4c9ce}
 
   .recorder{margin:30px auto 0;max-width:560px;background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:30px 26px 26px}
   .bigmic{width:96px;height:96px;border-radius:50%;background:var(--rust);border:0;cursor:pointer;display:grid;place-items:center;margin:0 auto;box-shadow:0 14px 34px -12px var(--rust);position:relative;transition:transform .12s,background .2s}
@@ -62,12 +62,12 @@
   .recstate.warn{color:var(--rust)} .recstate.good{color:var(--leaf)}
 
   .livetx{margin-top:18px;min-height:0;max-height:0;overflow:hidden;text-align:left;font-size:16px;color:#33302a;transition:max-height .3s}
-  .livetx.show{max-height:160px;overflow-y:auto;min-height:54px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+  .livetx.show{max-height:160px;overflow-y:auto;min-height:54px;background:#1f2329;border:1px solid var(--line);border-radius:11px;padding:13px 15px}
   .livetx .tinterim{color:var(--faint)}
 
   .who{margin-top:18px;text-align:left}
   .who label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
-  .who input{width:100%;font-family:var(--serif);font-size:17px;padding:11px 13px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;color:var(--ink)}
+  .who input{width:100%;font-family:var(--serif);font-size:17px;padding:11px 13px;border:1px solid var(--line-strong);border-radius:10px;background:#1f2329;color:var(--ink)}
   .who input:focus{outline:none;border-color:var(--rust)}
 
   .cta{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
@@ -89,7 +89,7 @@
   .scard{display:flex;gap:0;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:.18s;max-width:560px;margin:0 auto}
   .scard:hover{transform:translateY(-2px);box-shadow:0 24px 50px -28px rgba(28,26,22,.55)}
   @media(min-width:560px){.scard{flex-direction:row}}
-  .scard .img{background:#e7ddc8;flex:0 0 auto;width:100%;aspect-ratio:1/1;object-fit:cover}
+  .scard .img{background:#1f2329;flex:0 0 auto;width:100%;aspect-ratio:1/1;object-fit:cover}
   @media(min-width:560px){.scard .img{width:200px;aspect-ratio:auto}}
   .scard .body{padding:20px 22px;display:flex;flex-direction:column;justify-content:center}
   .scard .body .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);margin-bottom:7px}
@@ -98,7 +98,7 @@
   .scard .body .go{margin-top:12px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 
   /* working overlay */
-  .overlay{position:fixed;inset:0;z-index:80;background:rgba(241,235,221,.94);backdrop-filter:blur(6px);display:none;place-items:center;text-align:center;padding:24px}
+  .overlay{position:fixed;inset:0;z-index:80;background:rgba(18,20,23,.94);backdrop-filter:blur(6px);display:none;place-items:center;text-align:center;padding:24px}
   .overlay.on{display:grid}
   .overlay .spin{width:54px;height:54px;border-radius:50%;border:3px solid var(--line-strong);border-top-color:var(--rust);animation:rot 1s linear infinite;margin:0 auto 22px}
   @keyframes rot{to{transform:rotate(360deg)}}
