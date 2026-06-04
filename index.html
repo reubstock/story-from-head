@@ -69,6 +69,11 @@
   .who label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
   .who input{width:100%;font-family:var(--serif);font-size:17px;padding:11px 13px;border:1px solid var(--line-strong);border-radius:10px;background:#1f2329;color:var(--ink)}
   .who input:focus{outline:none;border-color:var(--rust)}
+  .facerow{display:flex;align-items:center;gap:12px}
+  .facebtn{font-family:var(--mono);font-size:12px;letter-spacing:.05em;border:1px dashed var(--line-strong);background:transparent;color:var(--ink);border-radius:10px;padding:11px 16px;cursor:pointer;transition:.16s}
+  .facebtn:hover{border-color:var(--rust);color:var(--rust)}
+  .facethumb{width:46px;height:46px;border-radius:10px;object-fit:cover;border:1px solid var(--line-strong)}
+  .faceclear{background:none;border:0;color:var(--faint);font-family:var(--mono);font-size:11px;cursor:pointer;text-decoration:underline}
 
   .cta{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .btn{appearance:none;border:0;cursor:pointer;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:15px 26px;border-radius:999px;transition:.16s}
@@ -134,6 +139,16 @@
       <div class="who" id="whoWrap" style="display:none">
         <label for="whoFor">Who's it for? <span style="text-transform:none;letter-spacing:0;color:var(--faint)">(optional)</span></label>
         <input id="whoFor" type="text" placeholder="e.g. for my daughter Mabel" />
+      </div>
+
+      <div class="who" id="faceWrap" style="display:none">
+        <label>Put a real face in it? <span style="text-transform:none;letter-spacing:0;color:var(--faint)">(optional — best when it stars you or someone you have a photo of)</span></label>
+        <div class="facerow">
+          <input id="faceInput" type="file" accept="image/*" style="display:none" onchange="onFace(this)" />
+          <button type="button" class="facebtn" id="faceBtn" onclick="document.getElementById('faceInput').click()">＋ Add a photo</button>
+          <img id="faceThumb" class="facethumb" alt="" style="display:none" />
+          <button type="button" class="faceclear" id="faceClear" style="display:none" onclick="clearFace()">remove</button>
+        </div>
       </div>
 
       <div class="cta">
@@ -267,6 +282,7 @@
     document.getElementById('timerSub').textContent='captured · '+fmt(seconds);
     document.getElementById('redoBtn').disabled=false;
     document.getElementById('whoWrap').style.display='block';
+    document.getElementById('faceWrap').style.display='block';
     if(seconds<2){setRecState('That was quick — record a bit more, or make it anyway.');}
     else{setRecState('Got it. Make your story, or start over.','good');}
   }
@@ -279,26 +295,54 @@
     document.getElementById('livetx').classList.remove('show');
     document.getElementById('livetx').innerHTML='';
     document.getElementById('whoWrap').style.display='none';
+    document.getElementById('faceWrap').style.display='none';
+    clearFace();
     document.getElementById('makeBtn').disabled=true;
     document.getElementById('redoBtn').disabled=true;
     setRecState('Up to two minutes. Talk like you mean it.');
   }
 
-  var OV_STEPS=['Listening back to what you said…','Writing it up in your words…','Painting the scene…','Binding your little book…'];
+  // ---------- optional real face ----------
+  var faceFile=null;
+  function onFace(input){
+    var f=input.files&&input.files[0]; if(!f)return;
+    faceFile=f;
+    var t=document.getElementById('faceThumb'); t.src=URL.createObjectURL(f); t.style.display='block';
+    document.getElementById('faceClear').style.display='inline';
+    document.getElementById('faceBtn').textContent='Change photo';
+  }
+  function clearFace(){
+    faceFile=null;
+    var fi=document.getElementById('faceInput'); if(fi)fi.value='';
+    var t=document.getElementById('faceThumb'); if(t){t.style.display='none';t.src='';}
+    var fc=document.getElementById('faceClear'); if(fc)fc.style.display='none';
+    var fb=document.getElementById('faceBtn'); if(fb)fb.textContent='＋ Add a photo';
+  }
+
+  var OV_STEPS=['Listening back to what you said…','Writing it up in your words…','Filming the scene…','Reading the story for what it means…'];
   function makeStory(){
     if(!recordedBlob){alert('Record a story first — tap the mic.');return;}
     var ov=document.getElementById('overlay'); ov.classList.add('on');
-    var st=document.getElementById('ovStatus'), i=0; st.textContent=OV_STEPS[0];
-    var cyc=setInterval(function(){i=(i+1)%OV_STEPS.length; st.textContent=OV_STEPS[i];},6000);
+    var st=document.getElementById('ovStatus');
+    var steps=faceFile?['Listening back to what you said…','Writing it up in your words…','Filming the scene…','Putting the face in…','Reading the story for what it means…']:OV_STEPS;
+    var i=0; st.textContent=steps[0];
+    var cyc=setInterval(function(){i=(i+1)%steps.length; st.textContent=steps[i];},6000);
 
     var who=encodeURIComponent(document.getElementById('whoFor').value.trim().slice(0,120));
     var hint=encodeURIComponent(finalTranscript.trim().slice(0,2000));
-    fetch('/api/create?who='+who+'&hint='+hint,{
-      method:'POST',
-      headers:{'Content-Type':recordedBlob.type||'audio/webm'},
-      body:recordedBlob
-    }).then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
-    .then(function(res){
+
+    function createStory(faceUrl){
+      var q='/api/create?who='+who+'&hint='+hint+(faceUrl?('&face='+encodeURIComponent(faceUrl)):'');
+      return fetch(q,{method:'POST',headers:{'Content-Type':recordedBlob.type||'audio/webm'},body:recordedBlob})
+        .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});});
+    }
+
+    var pre = faceFile
+      ? fetch('/api/upload-face',{method:'POST',headers:{'Content-Type':faceFile.type||'image/jpeg'},body:faceFile})
+          .then(function(r){return r.ok?r.json():null;}).then(function(j){return (j&&j.url)||null;}).catch(function(){return null;})
+      : Promise.resolve(null);
+
+    pre.then(createStory).then(function(res){
       clearInterval(cyc);
       if(res.ok&&res.j&&res.j.id){window.location.href='/s/'+res.j.id;}
       else{ov.classList.remove('on');setRecState((res.j&&res.j.message)?res.j.message:'Something went wrong making your story. Try again.','warn');}

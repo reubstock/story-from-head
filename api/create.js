@@ -20,6 +20,10 @@ export const config = { api: { bodyParser: false }, maxDuration: 120 };
 
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN;
+// cdingram/face-swap pinned version (same as Dreams). Refresh with:
+//   curl -s https://api.replicate.com/v1/models/cdingram/face-swap -H "Authorization: Bearer $TOKEN" | jq -r .latest_version.id
+const FACE_SWAP_VERSION = 'd1d6ea8c8be89d664a07a457526f7128109dee7030fdac424788d762c71ed111';
 
 const STORY_STYLE = `Style: cinematic film still from a quiet, character-driven independent drama. Naturalistic and real — soft realistic light with one warm key source against a slightly desaturated cool color grade, subtle film grain, shallow depth of field, anamorphic feel. A true moment, emotionally honest, never posed. NOT an illustration, NOT a cartoon, NOT a painting, NOT a 3D render, NOT a greeting card, NOT glossy stock. NO text, letters, or words anywhere in the image.`;
 
@@ -115,7 +119,8 @@ async function analyze(story) {
   "motifs": ["3 to 5 short motif/theme phrases — concrete, not abstract — e.g. 'grief disguised as routine', 'the persistence of love', 'found family'"],
   "turn": "one sentence naming the hinge — the moment the story pivots",
   "echo": "1–2 sentences: what this rhymes with in folklore or the wider canon. Name a real tale-type, motif, or archetype if one fits; otherwise name the universal pattern. No name-dropping for its own sake.",
-  "insight": "ONE concrete sentence pointing at a specific choice in THIS story — what the teller noticed, lingered on, or left out, and what that does. Point at the story, not the universe. Forbidden: 'this teaches/reveals/illustrates that', any life-lesson, and abstract-noun mush."
+  "insight": "ONE concrete sentence pointing at a specific choice in THIS story — what the teller noticed, lingered on, or left out, and what that does. Point at the story, not the universe. Forbidden: 'this teaches/reveals/illustrates that', any life-lesson, and abstract-noun mush.",
+  "next": "ONE specific, slightly nosy follow-up question that makes the teller want to tell the NEXT story — like a curious friend who wants more, pulled from a real detail in THIS story. Concrete and a little cheeky. E.g. 'When did you get drunk next?', 'Did you ever get caught?', 'When was the last time you thought about him?'. NEVER generic ('What happened next?', 'How did that make you feel?')."
 }
 
 STORY:
@@ -145,7 +150,37 @@ STORY:
     turn: (p.turn || '').toString().slice(0, 300),
     echo: (p.echo || '').toString().slice(0, 500),
     insight: (p.insight || '').toString().slice(0, 300),
+    next: (p.next || '').toString().slice(0, 200),
   };
+}
+
+// ---- Replicate face-swap (best-effort; returns null on any failure) ----
+async function faceSwap(generatedBuffer, faceUrl) {
+  if (!REPLICATE_TOKEN || !faceUrl) return null;
+  const targetDataUrl = `data:image/png;base64,${generatedBuffer.toString('base64')}`;
+  try {
+    const createRes = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${REPLICATE_TOKEN}`, 'Content-Type': 'application/json', Prefer: 'wait=55' },
+      body: JSON.stringify({ version: FACE_SWAP_VERSION, input: { input_image: targetDataUrl, swap_image: faceUrl } }),
+    });
+    if (!createRes.ok) { console.warn('faceswap create', createRes.status, (await createRes.text()).slice(0, 160)); return null; }
+    let prediction = await createRes.json();
+    let attempts = 0;
+    while (prediction.status && !['succeeded', 'failed', 'canceled'].includes(prediction.status) && attempts < 30) {
+      await new Promise((r) => setTimeout(r, 1000));
+      const pollUrl = prediction.urls?.get; if (!pollUrl) break;
+      const pollRes = await fetch(pollUrl, { headers: { Authorization: `Bearer ${REPLICATE_TOKEN}` } });
+      if (!pollRes.ok) break;
+      prediction = await pollRes.json(); attempts++;
+    }
+    if (prediction.status !== 'succeeded') { console.warn('faceswap status', prediction.status); return null; }
+    const outUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
+    if (!outUrl) return null;
+    const imgRes = await fetch(outUrl);
+    if (!imgRes.ok) return null;
+    return Buffer.from(await imgRes.arrayBuffer());
+  } catch (e) { console.warn('faceswap threw', e.message); return null; }
 }
 
 async function softenPrompt(p) {
@@ -243,11 +278,23 @@ export default async function handler(req, res) {
     // write it up
     const crafted = await craftStory(transcript, who);
 
+    // if the teller wants a real face in it, make the scene's main figure face-forward
+    const face = (req.query.face || '').toString().slice(0, 600);
+    let imagePrompt = crafted.image_prompt;
+    if (face) imagePrompt += `\n\nIMPORTANT: depict the main person with their face clearly visible — frontal or three-quarter view, well lit, not turned away or obscured.`;
+
     // illustrate + analyze in parallel (both best-effort — a story still ships without either)
-    const [imgBuf, analysis] = await Promise.all([
-      generateImage(crafted.image_prompt).catch((e) => { console.warn('image failed:', e.message); return null; }),
+    const [imgBuf0, analysis] = await Promise.all([
+      generateImage(imagePrompt).catch((e) => { console.warn('image failed:', e.message); return null; }),
       analyze(crafted.story).catch((e) => { console.warn('analyze failed:', e.message); return null; }),
     ]);
+
+    // swap the real face onto the figure (best-effort — falls back to the scene)
+    let imgBuf = imgBuf0, faced = false;
+    if (imgBuf0 && face && REPLICATE_TOKEN) {
+      const swapped = await faceSwap(imgBuf0, face).catch((e) => { console.warn('faceswap failed:', e.message); return null; });
+      if (swapped) { imgBuf = swapped; faced = true; }
+    }
 
     let image_url = null;
     if (imgBuf) {
@@ -267,6 +314,7 @@ export default async function handler(req, res) {
       who,
       audio_url,
       image_url,
+      faced,
       analysis,
       created: new Date().toISOString(),
     };

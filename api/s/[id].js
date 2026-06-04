@@ -66,6 +66,7 @@ export default async function handler(req, res) {
         ${a.insight ? `<div class="ainsight">${esc(a.insight)}</div>` : ''}
       </div>`
     : '';
+  const nextQ = (a && a.next) ? a.next : '';
 
   const shareText = encodeURIComponent(`“${s.title}” — a Story from Head. ${s.blurb || ''}`.trim());
   const smsHref = `sms:&body=${shareText}%20${encodeURIComponent(url)}`;
@@ -126,9 +127,11 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
   .sharebtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .sharebtns a,.sharebtns button{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line-strong);border-radius:999px;padding:11px 18px;text-decoration:none;background:transparent;color:var(--ink);cursor:pointer;transition:.16s}
   .sharebtns a:hover,.sharebtns button:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-  .next{text-align:center;margin:40px 0 12px}
-  .next a{display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--rust);color:#fff5ec;text-decoration:none;padding:15px 28px;border-radius:999px;transition:.16s}
-  .next a:hover{background:#9a3514}
+  .next{text-align:center;margin:46px 0 12px}
+  .next .nextk{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);margin-bottom:14px}
+  .next .nextq{font-family:var(--display);font-style:italic;font-size:clamp(23px,4.4vw,32px);line-height:1.25;color:var(--ink);max-width:18ch;margin:0 auto 22px}
+  .next a{display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--rust);color:#1a1208;text-decoration:none;padding:15px 28px;border-radius:999px;transition:.16s}
+  .next a:hover{background:#efa074}
   .next .sub{font-style:italic;color:var(--muted);font-size:15px;margin-top:14px}
   footer{padding:30px 0 50px;text-align:center}
   footer .sig{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
@@ -155,8 +158,9 @@ ${s.image_url ? `<meta property="og:image" content="${escAttr(s.image_url)}" />`
       </div>
     </div>
     <div class="next">
-      <a href="/">Tell another →</a>
-      <div class="sub">One story cues the next. Build a few and they’ll start to find each other.</div>
+      ${nextQ ? `<div class="nextk">Your next story</div><div class="nextq">${esc(nextQ)}</div>` : ''}
+      <a href="/">${nextQ ? 'Tell that one →' : 'Tell another →'}</a>
+      <div class="sub">${nextQ ? 'Every story you tell pulls the next one out of you.' : 'One story cues the next. Build a few and they’ll start to find each other.'}</div>
     </div>
   </article>
 </main>
