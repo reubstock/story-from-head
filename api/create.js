@@ -77,18 +77,24 @@ Return ONLY a JSON object:
   "image_prompt": "one vivid paragraph (~60 words) describing ONE specific scene from the story to illustrate. Concrete: the place, the light, the objects, who is there and roughly their age/look as implied. A moment, not a montage. Do NOT include any style words (handled separately) and do NOT include text/letters in the scene."
 }`;
 
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${OPENAI_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
-      temperature: 0.7,
-      response_format: { type: 'json_object' },
-    }),
-  });
-  if (!res.ok) throw new Error(`writeup ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const data = await res.json();
+  let data;
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${OPENAI_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
+        temperature: 0.7,
+        response_format: { type: 'json_object' },
+      }),
+    });
+    if (res.ok) { data = await res.json(); break; }
+    const body = (await res.text()).slice(0, 200);
+    // OpenAI throws transient 5xx internal_errors; retry a couple times before giving up
+    if (res.status >= 500 && attempt < 2) { await new Promise((r) => setTimeout(r, 800 * (attempt + 1))); continue; }
+    throw new Error(`writeup ${res.status}: ${body}`);
+  }
   let parsed = {};
   try { parsed = JSON.parse(data.choices?.[0]?.message?.content || '{}'); } catch (_) {}
   return {
